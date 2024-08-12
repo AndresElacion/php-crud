@@ -1,12 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
-    <title>ENROLLMENT</title>
-</head>
-<body>
+
+    <?php
+        include("../enrollment/layout/header.php");
+        include("../enrollment/components/nav.php");
+    ?>
     <div class="container my-5">
         <h2>List of Users</h2>
         <a href="/enrollment/create.php" class="btn btn-primary" role="button">New User</a>
@@ -69,5 +65,7 @@
             </tbody>
         </table>
     </div>
-</body>
-</html>
+
+    <?php
+        include("../enrollment/layout/footer.php");
+    ?>

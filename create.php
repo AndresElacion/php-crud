@@ -98,7 +98,7 @@
                 ";
             }
         ?>
-        <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]) ?>" method="POST">
+        <form action="<?php htmlspecialchars($_SERVER["PHP_SELF"]) ?>" method="POST">
             <div class="row mb-3">
                 <label for="first_name" class="col-sm-3 col-form-label">First Name</label>
                 <div class="col-sm-6">
