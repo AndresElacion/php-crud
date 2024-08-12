@@ -20,7 +20,7 @@
                         Admin
                     </a>
                     <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="/register.php">Profile</a></li>
+                        <li><a class="dropdown-item" href="/enrollment/profile.php">Profile</a></li>
                         <li><hr class="dropdown-divider"></li>
                         <li><a class="dropdown-item" href="/enrollment/logout.php">Logout</a></li>
                     </ul>
