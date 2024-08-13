@@ -4,7 +4,7 @@
         include("../enrollment/components/nav.php");
     ?>
     <div class="container my-5">
-        <h2>List of Users</h2>
+        <h2>List of Students</h2>
         <a href="/enrollment/create.php" class="btn btn-primary" role="button">New User</a>
         <br>
         <table class="table">
@@ -22,18 +22,14 @@
             </thead>
             <tbody>
                 <?php
-                    $serverName = "localhost";
-                    $username = "root";
-                    $password = "";
-                    $database = "vanilla_enrollment";
+                    // This will include the db.php from tools folder
+                    require_once __DIR__ . '/tools/db.php';
+                    // This will import the db class to instantiate and use it here
+                    use tools\db;
 
-                    // create connection
-                    $conn = new mysqli($serverName, $username, $password, $database);
-
-                    // check connection
-                    if($conn->connect_error) {
-                        die("Connection Failed:" . $conn->connect_error);
-                    }
+                    // Instantiate the db class
+                    $dbConn = new db();
+                    $conn = $dbConn->getDatabaseConnection();
 
                     // select all row from database users table
                     $sql = "SELECT * FROM users";

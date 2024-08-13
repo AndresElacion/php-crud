@@ -7,8 +7,14 @@
         exit();
     }
 
-    include("../enrollment/tools/db.php");
-    $dbConn = getDatabaseConnection();
+    // This will include the db.php from tools folder
+    require_once __DIR__ . '/tools/db.php';
+    // This will import the db class to instantiate and use it here
+    use tools\db;
+
+    // Instantiate the db class
+    $dbConn = new db();
+    $conn = $dbConn->getDatabaseConnection();
 
     $first_name = "";
     $last_name = "";
@@ -51,7 +57,7 @@
             $error = true;
         }
 
-        $statement = $dbConn->prepare("SELECT id FROM registration WHERE email = ?");
+        $statement = $conn->prepare("SELECT id FROM registration WHERE email = ?");
 
         // bind the variable to the prepared statement as parameters
         $statement->bind_param("s", $email);
@@ -94,7 +100,7 @@
             $created_at = date('Y-m-d H:i:s');
 
             // let use the prepared statements to avoid sql injection attacks
-            $statement = $dbConn->prepare("INSERT INTO registration (first_name, last_name, email, phone, address, password, created_at) VALUES (?, ?, ?, ?, ?, ?, ?)");
+            $statement = $conn->prepare("INSERT INTO registration (first_name, last_name, email, phone, address, password, created_at) VALUES (?, ?, ?, ?, ?, ?, ?)");
 
             // bind variables to the prepared statement as parameters
             // s => string; i => integer

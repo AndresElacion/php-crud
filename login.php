@@ -10,6 +10,13 @@
     $email = "";
     $error = "";
 
+    // This will include the db.php from tools folder
+    require_once __DIR__ . '/tools/db.php';
+
+    // This will import the db class to instantiate and use it here
+    use tools\db;
+    
+    
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $email = filter_var(trim($_POST["email"]), FILTER_SANITIZE_EMAIL);
         $password = filter_var(trim($_POST["password"]), FILTER_SANITIZE_SPECIAL_CHARS);
@@ -17,11 +24,12 @@
         if (empty($email) || empty($password)) {
             $error = "Email and Password are required";
         } else {
-            include("../enrollment/tools/db.php");
-            $dbConn = getDatabaseConnection();
+            // Instantiate the db class
+            $dbConn = new db();
+            $conn = $dbConn->getDatabaseConnection();
 
             // create new statement using prepare
-            $statement = $dbConn->prepare("SELECT id, first_name, last_name, phone, address, password, created_at FROM registration WHERE email = ?");
+            $statement = $conn->prepare("SELECT id, first_name, last_name, phone, address, password, created_at FROM registration WHERE email = ?");
 
             // Bind variables to the prepared statement as parameters
             $statement->bind_param('s', $email);
