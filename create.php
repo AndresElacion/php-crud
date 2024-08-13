@@ -1,16 +1,13 @@
 <?php
-    $serverName = "localhost";
-    $username = "root";
-    $password = "";
-    $database = "vanilla_enrollment";
+    // This will include the db.php from tools folder
+    require_once __DIR__ . '/tools/db.php';
 
-    // Create connection
-    $conn = new mysqli($serverName, $username, $password, $database);
+    // This will import the db class to instantiate and use it here
+    use tools\db;
 
-    // Check connection
-    if ($conn->connect_error) {
-        die("Connection failed: " . $conn->connect_error);
-    }
+    // Instantiate the db class
+    $dbConn = new db();
+    $conn = $dbConn->getDatabaseConnection();
 
     $first_name = "";
     $last_name = "";
