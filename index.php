@@ -34,6 +34,7 @@
         <thead>
             <tr>
                 <th>ID</th>
+                <th>Profile Image</th>
                 <th>First Name</th>
                 <th>Last Name</th>
                 <th>Email</th>
@@ -64,9 +65,11 @@
 
                 // read data of each row
                 while($row = $result->fetch_assoc()) {
+                    $imagePath = htmlspecialchars($row['profile_image']); // Sanitize the output
                     echo "
                         <tr>
                             <td>$row[id]</td>
+                            <td><img src='$imagePath' alt='Profile Image' style='width: 100px; height: 100px; object-fit: cover;'></td>
                             <td>$row[first_name]</td>
                             <td>$row[last_name]</td>
                             <td>$row[email]</td>
