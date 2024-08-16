@@ -1,6 +1,28 @@
 <?php
     include("./layout/header.php");
 
+    $timeout_duration = 60; // 30 minutes 1800
+
+    // Check if 'last_activity' is set in the session
+    if (isset($_SESSION['last_activity'])) {
+        // calculate the time difference between now and last_activity
+        $time_inactive = time() - $_SESSION['last_activity'];
+
+        // check if the time difference exceeds the timeout duration
+        if ($time_inactive > $timeout_duration) {
+            // if the user is inactive for more than the timeout duration, destroy the session
+            session_unset();
+            session_destroy();
+
+            // redirect to login
+            header("Location: /enrollment/login.php");
+            exit();
+        }
+    }
+
+    // update the last activity time to the current time
+    $_SESSION['last_activity'] = time();
+
     if (!isset($_SESSION["email"])) {
         // check if the user is logged in, if not redirect to login page
         header("Location: /enrollment/login.php");

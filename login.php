@@ -14,8 +14,7 @@
     require_once __DIR__ . '/tools/db.php';
 
     // This will import the db class to instantiate and use it here
-    use tools\db;
-    
+    use tools\db;    
     
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $email = filter_var(trim($_POST["email"]), FILTER_SANITIZE_EMAIL);
