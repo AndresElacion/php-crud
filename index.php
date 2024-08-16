@@ -3,7 +3,7 @@
     include("../enrollment/components/nav.php");
 
     // set timeout duration in seconds
-    $timeout_duration = 60; // 30 minutes
+    $timeout_duration = 1800; // 30 minutes
 
     // Check if 'last_activity' is set in the session
     if (isset($_SESSION['last_activity'])) {
