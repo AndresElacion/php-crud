@@ -1,7 +1,7 @@
 <?php
     include("./layout/header.php");
 
-    $timeout_duration = 60; // 30 minutes 1800
+    $timeout_duration = 1800; // 30 minutes 1800
 
     // Check if 'last_activity' is set in the session
     if (isset($_SESSION['last_activity'])) {

@@ -1,16 +1,10 @@
 <?php
-    $serverName = "localhost";
-    $username = "root";
-    $password = "";
-    $database = "vanilla_enrollment";
+    require_once __DIR__ . '/tools/db.php';
 
-    // Create connection
-    $conn = new mysqli($serverName, $username, $password, $database);
+    use tools\db;
 
-    // Check connection
-    if ($conn->connect_error) {
-        die("Connection failed: " . $conn->connect_error);
-    }
+    $dbConn = new db();
+    $conn = $dbConn->getDatabaseConnection();
 
     $id = "";
     $first_name = "";
@@ -18,6 +12,7 @@
     $email = "";
     $phone = "";
     $address = "";
+    $profile_image = "";
 
     $errorMessage = "";
     $successMessage = "";
@@ -48,6 +43,7 @@
         $email = $row["email"];
         $phone = $row["phone"];
         $address = $row["address"];
+        $profile_image = $row["profile_image"];
     } else {
         // this will update the data of the selected ID
 
@@ -59,6 +55,34 @@
         $address = htmlspecialchars(trim($_POST["address"]));
 
         do {
+            if (isset($_FILES['profile_image']) && $_FILES['profile_image']['error'] === UPLOAD_ERR_OK) {
+                // Directory where the uploaded image will be saved
+                $target_dir = "uploads/";
+                $target_file = $target_dir . basename($_FILES['profile_image']['name']);
+                $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
+    
+                // Check if the image is a valid type
+                $check = getimagesize($_FILES['profile_image']['tmp_name']);
+                if ($check === false) {
+                    $errorMessage = "File is not an image.";
+                } elseif ($_FILES['profile_image']['size'] > 2000000) { // Check file size (2MB limit)
+                    $errorMessage = "Sorry, your file is too large.";
+                } elseif (!in_array($imageFileType, ['jpg', 'jpeg', 'png'])) { // Allow only certain formats
+                    $errorMessage = "Sorry, only JPG, JPEG, and PNG files are allowed.";
+                } elseif (file_exists($target_file)) { // Check if file already exists
+                    $errorMessage = "Sorry, file already exists.";
+                } else {
+                    // Move the uploaded file to the target directory
+                    if (move_uploaded_file($_FILES['profile_image']['tmp_name'], $target_file)) {
+                        $profile_image = $target_file; // Set the path to the profile_image variable
+                    } else {
+                        $errorMessage = "Sorry, there was an error uploading your file.";
+                    }
+                }
+            } else {
+                $errorMessage = "Image upload failed. Please select a valid image file.";
+            }
+
             if (empty($first_name) || empty($last_name) || empty($email) || empty($phone) || empty($address)) {
                 $errorMessage = "All fields are required.";
             } elseif (!filter_var($first_name, FILTER_SANITIZE_SPECIAL_CHARS)) {
@@ -73,7 +97,7 @@
                 $errorMessage = "Invalid text format.";
             } else {
                 try {
-                    $sql = "UPDATE users SET first_name = '$first_name', last_name = '$last_name', email = '$email', phone = '$phone', address = '$address' WHERE id = $id";
+                    $sql = "UPDATE users SET first_name = '$first_name', last_name = '$last_name', email = '$email', phone = '$phone', address = '$address', profile_image = '$profile_image' WHERE id = $id";
         
                     $result = $conn->query($sql);
         
@@ -119,7 +143,7 @@
                 ";
             }
         ?>
-        <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]) ?>" method="POST">
+        <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]) ?>" method="POST" enctype="multipart/form-data">
             <input type="hidden" name="id" value="<?php echo $id?>">
             <div class="row mb-3">
                 <label for="first_name" class="col-sm-3 col-form-label">First Name</label>
@@ -153,6 +177,13 @@
                 <label for="address" class="col-sm-3 col-form-label">Address</label>
                 <div class="col-sm-6">
                     <input type="text" class="form-control" name="address" value="<?php echo $address ?>">
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <label for="profile_image" class="col-sm-3 col-form-label">Select image to upload</label>
+                <div class="col-sm-6">
+                    <input type="file" class="form-control" name="profile_image">
                 </div>
             </div>
 
