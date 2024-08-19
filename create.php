@@ -26,8 +26,16 @@
         $phone = htmlspecialchars(trim($_POST["phone"]));
         $address = htmlspecialchars(trim($_POST["address"]));
 
-        // Debugging: Check if profile_image is set in $_FILES
-        if (isset($_FILES['profile_image']) && $_FILES['profile_image']['error'] === UPLOAD_ERR_OK) {
+        if (!empty($_POST['captured_image'])) {
+            $captured_image_data = $_POST['captured_image'];
+            $image_parts = explode(";base64,", $captured_image_data);
+            $image_type_aux = explode("image/", $image_parts[0]);
+            $image_type = $image_type_aux[1];
+            $image_base64 = base64_decode($image_parts[1]);
+            $file_name = 'uploads/' . uniqid() . '.' . $image_type;
+            file_put_contents($file_name, $image_base64);
+            $profile_image = $file_name;
+        } elseif (isset($_FILES['profile_image']) && $_FILES['profile_image']['error'] === UPLOAD_ERR_OK) {
             // Directory where the uploaded image will be saved
             $target_dir = "uploads/";
             $target_file = $target_dir . basename($_FILES['profile_image']['name']);
@@ -164,6 +172,16 @@
             </div>
 
             <div class="row mb-3">
+                <label for="profile_image" class="cols-sm-3 col-form-label">Capture Image</label>
+                <div class="col-sm-6">
+                    <video id="video" width="100%" height="300" autoplay></video>
+                    <button type="button" id="capture-btn" class="btn btn-primary mt-2">Capture Image</button>
+                    <canvas id="canvas" style="display:none;"></canvas>
+                    <input type="hidden" name="captured_image" id="captured_image">
+                </div>
+            </div>
+
+            <div class="row mb-3">
                 <label for="profile_image" class="col-sm-3 col-form-label">Select image to upload</label>
                 <div class="col-sm-6">
                     <input type="file" class="form-control" name="profile_image">
@@ -193,5 +211,32 @@
             </div>
         </form>
     </div>
+
+    <script>
+        // This is to access webcam
+        const video = document.querySelector('video');
+        const canvas = document.querySelector('canvas');
+        const capturedImageInput = document.querySelector('#captured_image');
+
+        navigator.mediaDevices.getUserMedia({video: true})
+        .then(stream => {
+            video.srcObject = stream;
+        })
+        .catch(error => {
+            console.error("Error accessing camera: ", error);
+        })
+
+        // capture the image when button clicked
+        document.querySelector('#capture-btn').addEventListener('click', function() {
+            const context = canvas.getContext('2d');
+            canvas.width = video.videoHeight;
+            canvas.height = video.videoHeight;
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+        // convert the canvas image to a data URL and store it in the hidden input field
+        const imageDataURL = canvas.toDataURL('image/png');
+        capturedImageInput.value = imageDataURL;
+        });
+    </script>
 </body>
 </html>
