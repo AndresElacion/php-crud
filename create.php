@@ -173,11 +173,16 @@
 
             <div class="row mb-3">
                 <label for="profile_image" class="cols-sm-3 col-form-label">Capture Image</label>
-                <div class="col-sm-6">
-                    <video id="video" width="100%" height="300" autoplay></video>
+                <div class="col-sm-3">
                     <button type="button" id="capture-btn" class="btn btn-primary mt-2">Capture Image</button>
+                </div>
+                <div class="col-sm-6">
+                    <video id="video" height="300" autoplay class="w-50"></video>
                     <canvas id="canvas" style="display:none;"></canvas>
                     <input type="hidden" name="captured_image" id="captured_image">
+                    <div class="col-sm-6">
+                        <img src="" id="image-preview" alt="Captured Image" class="img-fluid mt-3 d-none w-75 object-fit-cover">
+                    </div>
                 </div>
             </div>
 
@@ -217,6 +222,7 @@
         const video = document.querySelector('video');
         const canvas = document.querySelector('canvas');
         const capturedImageInput = document.querySelector('#captured_image');
+        const imagePreview = document.querySelector('#image-preview');
 
         navigator.mediaDevices.getUserMedia({video: true})
         .then(stream => {
@@ -236,6 +242,14 @@
         // convert the canvas image to a data URL and store it in the hidden input field
         const imageDataURL = canvas.toDataURL('image/png');
         capturedImageInput.value = imageDataURL;
+
+        // display the captured image in the img element
+        imagePreview.src = imageDataURL;
+        imagePreview.classList.remove('d-none');
+        imagePreview.classList.add('d-block');
+
+        // hide the video element
+        video.style.display = 'none';
         });
     </script>
 </body>
